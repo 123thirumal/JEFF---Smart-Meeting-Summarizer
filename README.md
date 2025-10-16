@@ -8,6 +8,19 @@ JEFF – The Smart Meeting Summarizer is an AI-powered tool that automatically c
 
 ---
 
+### 📸 Screenshots
+
+<table>
+  <tr>
+    <td><img src="presentation/screenshots/1.png" width="200"/></td>
+    <td><img src="presentation/screenshots/2.png" width="200"/></td>
+    <td><img src="presentation/screenshots/3.png" width="200"/></td>
+    <td><img src="presentation/screenshots/4.png" width="200"/></td>
+  </tr>
+</table>
+
+---
+
 ## 🏗️  Architecture Diagram
 ![Architecture Diagram](presentaion/arch.png)
 
