@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JEFF</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="jeff.css">
+</head>
+<body>
+  <div class="background-animation">
+    <div class="blurred-sphere"></div>
+  </div>
+
+  <div class="content-main">
+    <!-- Welcome Section -->
+    <div class="content-1">
+      <section class="hero-section">
+        <h1 class="hero-title">
+          Hello, I'm 
+          <span style="background: linear-gradient(135deg, #79804D, #545f3d); 
+                       -webkit-background-clip: text; 
+                       -webkit-text-fill-color: transparent; 
+                       display: inline-block;">JEFF</span>
+        </h1>
+        <p class="hero-subtitle-1">Your smart meeting companion</p>
+        <p class="hero-subtitle-2">
+          <span style="display: inline-block; width: 1ch;"></span>
+          I am here to help you 
+          <span id="typed-text-container" 
+                style="display: inline-block; min-width: 10ch; text-align: left;">
+            <span id="typed-text"></span>
+          </span>
+        </p>
+        
+      </section>
+
+      <!-- Quick Question Buttons -->
+      <div class="button-container">
+        <div class="elevated-box">
+          <i class="fas fa-microphone-lines fa-2x"></i>
+          <p class="mb-0">Upload your meeting audio - I’ll handle the rest.</p>
+        </div>
+        <div class="elevated-box">
+          <i class="fas fa-file-lines fa-2x"></i>
+          <p class="mb-0">Get concise summaries and key discussion points instantly.</p>
+        </div>
+        <div class="elevated-box">
+          <i class="fas fa-chart-line fa-2x"></i>
+          <p class="mb-0">Review action items and insights from every conversation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Section alternate for content-1 -->
+    <div class="chat-container" id="chatArea" style="display: none;">
+      <div class="chat-title-box">
+        <button id="backToHome">
+          <i class="fa-solid fa-arrow-left"></i> 
+        </button>
+        <p>JEFF</p>
+      </div>
+      <div class="chat-area">
+        <div class="chat-messages" id="chatMessages"></div>
+      </div>
+    </div>
+
+    <!-- Input Section -->
+    <div class="content-2">
+      <div class="query-box" id="queryBox">
+        <textarea id="queryInput"
+                  rows="1"
+                  placeholder="Ask me anything..."
+                  onfocus="addFocus()"
+                  onblur="removeFocus()"></textarea>
+
+        <div class="attachments" id="attachments"></div>
+
+
+        <div class="button-ctr">
+          <button id="fileButton" class="fileButton">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+          <input type="file" id="audioInput" accept="audio/*" multiple style="display: none;">
+          <button id="sendButton" class="sendButton">
+            <i class="fa-solid fa-arrow-up"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    if (window.visualViewport) {
+      const main = document.querySelector('.content-main');
+      window.visualViewport.addEventListener('resize', () => {
+        main.style.height = window.visualViewport.height + 'px';
+      });
+    }
+
+    var typed = new Typed('#typed-text', {
+      strings: ['Summarise. ', 'Analyse. ', 'Interpret.'],
+      typeSpeed: 50,
+      backSpeed: 50,
+      backDelay: 1200,
+      startDelay: 10,
+      loop: true,
+      showCursor: true,
+      cursorChar: '|',
+    });
+
+    function addFocus() {
+      document.getElementById("queryBox").classList.add("focused");
+    }
+
+    function removeFocus() {
+      document.getElementById("queryBox").classList.remove("focused");
+    }
+
+    const textarea = document.getElementById("queryInput");
+    textarea.addEventListener("input", () => {
+      textarea.style.height = "auto";
+      textarea.style.height = Math.min(textarea.scrollHeight, 200) + "px";
+    });
+
+    const queryInput = document.getElementById("queryInput");
+    const sendButton = document.getElementById("sendButton");
+    const content1 = document.querySelector(".content-1");
+    const chatArea = document.getElementById("chatArea");
+    const chatMessages = document.getElementById("chatMessages");
+
+    const fileButton = document.getElementById("fileButton");
+    const audioInput = document.getElementById("audioInput");
+    const attachmentsDiv = document.getElementById("attachments");
+
+    let attachedFiles = [];
+
+    // When "+" clicked → open file picker
+    fileButton.addEventListener("click", () => {
+      if (attachedFiles.length >= 1) {
+        alert(`You can attach a maximum of 1 audio file.`);
+        return;
+      }
+      audioInput.click();
+    });
+
+    // When files are selected
+    audioInput.addEventListener("change", () => {
+      for (const file of audioInput.files) {
+        attachedFiles.push(file);
+        addAttachmentItem(file);
+      }
+      audioInput.value = ""; // reset input
+    });
+
+    // Add attachment chip
+    function addAttachmentItem(file) {
+      const item = document.createElement("div");
+      item.classList.add("attachment-item");
+      item.innerHTML = `
+        <i class="fa-solid fa-music"></i>
+        <span>${file.name}</span>
+        <i class="fa-solid fa-xmark remove-icon"></i>
+      `;
+      attachmentsDiv.appendChild(item);
+
+      // Remove handler
+      item.querySelector(".remove-icon").addEventListener("click", () => {
+        attachmentsDiv.removeChild(item);
+        attachedFiles = attachedFiles.filter(f => f !== file);
+      });
+    }
+
+    function addMessageBubble(text, sender, isHTML = false) {
+      const bubble = document.createElement("div");
+      bubble.classList.add("chat-message", sender);
+      bubble.innerHTML = isHTML ? marked.parse(text) : text;
+      chatMessages.appendChild(bubble);
+
+      const chatScroll = chatArea.querySelector(".chat-area");
+      chatScroll.scrollTo({
+        top: chatScroll.scrollHeight,
+        behavior: "smooth"
+      });
+      return bubble;
+    }
+
+    textarea.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendButton.click();
+      }
+    });
+
+    sendButton.addEventListener("click", async () => {
+      const userMessage = queryInput.value.trim();
+    
+      if (attachedFiles.length === 0) {
+        alert("Please add an audio file.");
+        return;
+      }
+      if (!userMessage) {
+        alert("Please enter a message.");
+        return;
+      }
+    
+      content1.style.display = "none";
+      chatArea.style.display = "flex";
+    
+      addMessageBubble(userMessage, "user");
+    
+      const typingBubble = addMessageBubble(
+        '<span class="typing-dots jump"><span></span><span></span><span></span></span>', 
+        "bot", true
+      );
+    
+      // Prepare data for FastAPI
+      const formData = new FormData();
+      if (userMessage) formData.append("text", userMessage);
+      attachedFiles.forEach((file, index) => {
+        formData.append(`audio_${index}`, file);
+      });
+    
+      try {
+        const response = await fetch("http://127.0.0.1:8000/process", {
+          method: "POST",
+          body: formData,
+        });
+    
+        if (!response.ok) throw new Error("Server error");
+    
+        const data = await response.json();
+    
+        // Remove the initial typing bubble after getting response
+        typingBubble.remove();
+    
+        // Step-by-step bot messages
+        if (data.steps && Array.isArray(data.steps)) {
+          for (const step of data.steps) {
+            // Add typing bubble before each message
+            const stepTyping = addMessageBubble(
+              '<span class="typing-dots jump"><span></span><span></span><span></span></span>',
+              "bot",
+              true
+            );
+    
+            // Wait to simulate thinking time
+            await new Promise(res => setTimeout(res, 800));
+    
+            // Replace typing dots with the actual message
+            // Then, in your code:
+            const responseText = step; 
+            
+            const html = marked.parse(responseText); // Convert markdown to HTML
+            stepTyping.innerHTML = html;
+          }
+        }
+    
+      } catch (err) {
+        console.error(err);
+        typingBubble.innerHTML = "Failed to connect to the server.";
+      }
+
+      
+      // Reset after sending
+      queryInput.value = "";
+      attachmentsDiv.innerHTML = "";
+      attachedFiles = [];
+    });
+    
+    
+
+
+
+
+    const backToHomeButton = document.getElementById("backToHome");
+    backToHomeButton.addEventListener("click", () => {
+      // Clear all chat messages
+      chatMessages.innerHTML = "";
+      content1.style.display = "flex";
+      chatArea.style.display = "none";
+    });
+  </script>
+</body>
+</html>
