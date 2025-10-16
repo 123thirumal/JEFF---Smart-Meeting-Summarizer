@@ -25,7 +25,7 @@ JEFF – The Smart Meeting Summarizer is an AI-powered tool that automatically c
 ## 🎥 Video Demo
 
 This attached video demo explains the working of this project visually.
-[Watch the demo](https://link_to_your_video)
+[Watch the demo](https://drive.google.com/file/d/1ePh13xMkC-mDhJyuTO4sOi4yJEfMeOPL/view?usp=sharing)
 
 ## 💻 Installation Steps
 
