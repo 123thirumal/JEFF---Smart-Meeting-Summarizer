@@ -12,10 +12,12 @@ JEFF – The Smart Meeting Summarizer is an AI-powered tool that automatically c
 
 <table>
   <tr>
-    <td><img src="presentation/screenshots/1.png" width="200"/></td>
-    <td><img src="presentation/screenshots/2.png" width="200"/></td>
-    <td><img src="presentation/screenshots/3.png" width="200"/></td>
-    <td><img src="presentation/screenshots/4.png" width="200"/></td>
+    <td><img src="presentation/screenshots/1.png" width="400"/></td>
+    <td><img src="presentation/screenshots/2.png" width="400"/></td>
+  </tr>
+  <tr>
+    <td><img src="presentation/screenshots/3.png" width="400"/></td>
+    <td><img src="presentation/screenshots/4.png" width="400"/></td>
   </tr>
 </table>
 
