@@ -17,7 +17,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://jeff-smart-meeting-summarizer.vercel.app/"],  # Change to your frontend URL in production
+    allow_origins=["*"],  # Change to your frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -168,5 +168,6 @@ async def process_input(
     except Exception as e:
         messages.append(f"Error: {str(e)}")
         return JSONResponse({"steps": messages}, status_code=500)
+
 
 
