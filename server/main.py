@@ -9,6 +9,7 @@ import requests
 import os
 from google import genai
 from google.genai import types
+import json
 
 # ------------------- Setup -------------------
 load_dotenv()
@@ -29,12 +30,13 @@ DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")
 DRIVE_FOLDER_ID =  os.getenv("DRIVE_FOLDER_ID") # 🔸 Replace with your folder ID
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+token_data = json.loads(os.getenv("GDRIVE_TOKEN"))
 
 
 # ------------------- Helper Functions -------------------
 def upload_to_gdrive(file_path: str, file_name: str):
     """Uploads file to Google Drive and returns public download link."""
-    creds = Credentials.from_authorized_user_file("./gdrive_api/token.json")
+    creds = Credentials.from_authorized_user_info(token_data)
     service = build("drive", "v3", credentials=creds)
 
     # Metadata for the uploaded file
@@ -166,3 +168,4 @@ async def process_input(
     except Exception as e:
         messages.append(f"Error: {str(e)}")
         return JSONResponse({"steps": messages}, status_code=500)
+
